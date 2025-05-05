@@ -13,6 +13,10 @@ A fully decentralized peer-to-peer file sharing application that enables direct 
 - **File Integrity**: SHA-256 hash verification of shared files
 - **User-Friendly CLI**: Simple command interface for all operations
 
+## Screenshots
+
+[Screenshots would go here]
+
 ## Requirements
 
 - Python 3.6 or higher

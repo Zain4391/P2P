@@ -1,11 +1,3 @@
-"""
-Network-Enabled Peer-to-Peer File Sharing Application with Persistent IDs
---------------------------------------------------
-
-This version enables connections between different machines and maintains
-consistent peer IDs across sessions.
-"""
-
 import socket
 import threading
 import json
@@ -39,9 +31,16 @@ class Peer:
         # Ensure the application directory exists
         self._ensure_app_dir_exists()
         
-        # Create shared directory if it doesn't exist
+        # Make sure shared_dir is an absolute path
         self._ensure_absolute_path()
-        os.makedirs(self.shared_dir, exist_ok=True)
+        
+        # Create shared directory only if it doesn't exist
+        if not os.path.exists(self.shared_dir):
+            try:
+                os.makedirs(self.shared_dir)
+                self.log(f"Created shared directory: {self.shared_dir}")
+            except Exception as e:
+                self.log(f"Error creating shared directory: {e}", force=True)
         
         # Initialize server socket
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -133,6 +132,10 @@ class Peer:
         """Scan the shared directory for files and update the files dictionary."""
         self.files = {}
         try:
+            if not os.path.exists(self.shared_dir):
+                self.log(f"Warning: Shared directory does not exist: {self.shared_dir}", force=True)
+                return
+                
             for file_path in Path(self.shared_dir).glob('*'):
                 if file_path.is_file():
                     file_hash = self.calculate_file_hash(file_path)
@@ -437,6 +440,10 @@ class Peer:
                 # Send ready acknowledgment
                 peer_socket.send('ready'.encode('utf-8'))
                 
+                # Ensure shared directory exists before downloading
+                if not os.path.exists(self.shared_dir):
+                    os.makedirs(self.shared_dir)
+                
                 # Receive and save the file
                 file_path = os.path.join(self.shared_dir, filename)
                 received = 0
@@ -497,6 +504,7 @@ class Peer:
                     self.log(f"You are listening on: {self.local_ip}:{self.port}", force=True)
                     self.log(f"Other peers can connect using: --bootstrap {self.local_ip}:{self.port}", force=True)
                     self.log(f"Shared directory: {self.shared_dir}", force=True)
+                    self.log(f"Directory exists: {os.path.exists(self.shared_dir)}", force=True)
                 
                 elif parts[0] == 'peers':
                     if not self.peers:
@@ -507,7 +515,9 @@ class Peer:
                             self.log(f"  - {peer_id} at {host}:{port}", force=True)
                 
                 elif parts[0] == 'files':
-                    if not self.files:
+                    if not os.path.exists(self.shared_dir):
+                        self.log(f"Shared directory does not exist: {self.shared_dir}", force=True)
+                    elif not self.files:
                         self.log("No files in shared directory", force=True)
                     else:
                         self.log("Shared files:", force=True)
@@ -515,6 +525,20 @@ class Peer:
                             self.log(f"  - {filename} ({file_hash[:8]}...)", force=True)
                 
                 elif parts[0] == 'scan':
+                    if not os.path.exists(self.shared_dir):
+                        self.log(f"Shared directory does not exist: {self.shared_dir}", force=True)
+                        self.log("Create it? (y/n)", force=True)
+                        create = input().strip().lower()
+                        if create in ('y', 'yes'):
+                            try:
+                                os.makedirs(self.shared_dir)
+                                self.log(f"Created shared directory: {self.shared_dir}", force=True)
+                            except Exception as e:
+                                self.log(f"Error creating directory: {e}", force=True)
+                        else:
+                            self.log("Skipping directory creation", force=True)
+                            continue
+                    
                     self.scan_files()
                     self.log("Shared directory scanned", force=True)
                     if self.files:
