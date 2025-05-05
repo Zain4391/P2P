@@ -23,8 +23,8 @@ A fully decentralized peer-to-peer file sharing application that enables direct 
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/P2P.git
-   cd p2p-file-sharing
+   git clone https://github.com/Zain4391/P2P.git
+   cd P2P
    ```
 
 2. Run the application:
@@ -42,20 +42,20 @@ Download the appropriate executable for your platform from the Releases section.
 
 ```bash
 # On Linux/macOS
-./p2p_file_sharing_persistent --port 8001 --dir ./shared_files
+./p2p_file_sharing --port 8001 --dir ./shared_files
 
 # On Windows
-p2p_file_sharing_persistent.exe --port 8001 --dir .\shared_files
+p2p_file_sharing.exe --port 8001 --dir .\shared_files
 ```
 
 ### Joining an Existing Network
 
 ```bash
 # On Linux/macOS
-./p2p_file_sharing_persistent --port 8002 --dir ./shared_files --bootstrap 192.168.1.100:8001
+./p2p_file_sharing --port 8002 --dir ./shared_files --bootstrap 192.168.1.100:8001
 
 # On Windows
-p2p_file_sharing_persistent.exe --port 8002 --dir .\shared_files --bootstrap 192.168.1.100:8001
+p2p_file_sharing.exe --port 8002 --dir .\shared_files --bootstrap 192.168.1.100:8001
 ```
 
 Replace `192.168.1.100:8001` with the IP and port of a known peer.
@@ -92,14 +92,14 @@ You can build standalone executables for distribution:
 
 ```cmd
 pip install pyinstaller
-pyinstaller --onefile p2p_file_sharing_persistent.py
+pyinstaller --onefile p2p_file_sharing.py
 ```
 
 ### On Linux/macOS
 
 ```bash
 pip install pyinstaller
-pyinstaller --onefile p2p_file_sharing_persistent.py
+pyinstaller --onefile p2p_file_sharing.py
 ```
 
 The executable will be created in the `dist` directory.
