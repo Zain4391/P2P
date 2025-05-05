@@ -27,13 +27,13 @@ A fully decentralized peer-to-peer file sharing application that enables direct 
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/p2p-file-sharing.git
+   git clone https://github.com/yourusername/P2P.git
    cd p2p-file-sharing
    ```
 
 2. Run the application:
    ```bash
-   python p2p_file_sharing_persistent.py
+   python p2p_file_sharing.py
    ```
 
 ### Option 2: Use Pre-built Executables
@@ -146,7 +146,7 @@ The executable will be created in the `dist` directory.
 
 ## License
 
-[Your chosen license]
+MIT
 
 ## Acknowledgments
 
